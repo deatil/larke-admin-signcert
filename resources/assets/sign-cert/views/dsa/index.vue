@@ -2,23 +2,14 @@
   <div class="app-container">
     <el-card>
       <div slot="header" class="clearfix">
-          <span>RSA证书</span>
+          <span>DSA证书</span>
       </div>
 
-      <el-alert
-          type="warning"
-          title="注意事项"
-          description="生成 RSA 证书需要 php 开启 openssl 扩展"
-          style="margin-bottom:15px;"
-          show-icon
-          :closable="false"
-      />  
-
       <div class="filter-container">
-        <el-select v-model="setting.len" placeholder="秘钥长度" class="filter-item" style="width: 130px;margin-right: 10px;">
-            <el-option v-for="len in lenOptions" :key="len.key" :label="len.display_name" :value="len.key" />
+        <el-select v-model="setting.ln" placeholder="LN类型" class="filter-item" style="width: 130px;margin-right: 10px;">
+            <el-option v-for="ln in lnOptions" :key="ln.key" :label="ln.display_name" :value="ln.key" />
         </el-select>
-        
+
         <el-select v-model="setting.ktype" placeholder="秘钥格式" class="filter-item" style="width: 130px;margin-right: 10px;">
             <el-option v-for="ktype in ktypeOptions" :key="ktype.key" :label="ktype.display_name" :value="ktype.key" />
         </el-select>
@@ -35,7 +26,7 @@
           <div class="sign-data-tip">
             私钥 
             <el-tag type="success" size="mini">
-              rsa_private_key.pem
+              dsa_private_key.pem
             </el-tag>
             <el-button v-waves size="mini" style="margin-left:10px;" @click="handleClipboard(response.private_key, $event)">
               复制
@@ -50,7 +41,7 @@
           <div class="sign-data-tip">
             公钥
             <el-tag type="success" size="mini">
-              rsa_public_key.pem
+              dsa_public_key.pem
             </el-tag>
             <el-button v-waves size="mini" style="margin-left:10px;" @click="handleClipboard(response.public_key, $event)">
                 复制
@@ -69,7 +60,7 @@
 <script>
 import clipboard from '@/utils/clipboard'
 import waves from '@/directive/waves'
-import { rsa } from '../../api/signCert'
+import { dsa } from '../../api/signCert'
 
 export default {
   name: 'ConfigIndex',
@@ -82,20 +73,20 @@ export default {
     return {
       submitLoading: false,
       setting: {
-        len: '2048',
-        ktype: 'pkcs8',
+        ln: 'ln1024_160',
+        ktype: 'pkcs1',
         pass: '',        
       },
       response: {
         private_key: '',
         public_key: '',
       },
-      lenOptions: [
-        { key: '512', display_name: '512' },
-        { key: '1024', display_name: '1024' },
-        { key: '2048', display_name: '2048' },
-        { key: '4096', display_name: '4096' },
-      ],
+      lnOptions: [
+        { key: 'ln1024_160', display_name: 'ln1024_160' },
+        { key: 'ln2048_224', display_name: 'ln2048_224' },
+        { key: 'ln2048_256', display_name: 'ln2048_256' },
+        { key: 'ln3072_256', display_name: 'ln3072_256' },
+      ],   
       ktypeOptions: [
         { key: 'pkcs1', display_name: 'PKCS#1' },
         { key: 'pkcs8', display_name: 'PKCS#8' },
@@ -119,7 +110,7 @@ export default {
 
         this.submitLoading = true
         
-        rsa(this.setting).then(response => {
+        dsa(this.setting).then(response => {
             this.response.private_key = response.data.private_key
             this.response.public_key = response.data.public_key
 

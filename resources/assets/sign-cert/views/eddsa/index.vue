@@ -15,7 +15,9 @@
         />        
 
         <div class="filter-container">
-            <el-button v-waves class="filter-item" type="primary" @click="submit">
+            <el-input v-model="setting.pass" placeholder="秘钥密码，可不填" clearable style="width: 200px;margin-right: 10px;" class="filter-item" />
+
+            <el-button v-waves class="filter-item" type="primary" :loading="submitLoading" @click="submit">
                 生成证书
             </el-button>
         </div>
@@ -26,7 +28,7 @@
                     <span style="margin-right: 10px;">
                         私钥
                         <el-tag type="success" size="mini">
-                            eddsa_private_key.hex
+                            eddsa_private_key.pem
                         </el-tag>
                     </span>
                     <el-button v-waves size="mini" style="margin-left:10px;" @click="handleClipboard(response.private_key, $event)">
@@ -43,7 +45,7 @@
                     <span style="margin-right: 10px;">
                         公钥
                         <el-tag type="success" size="mini">
-                            eddsa_public_key.hex
+                            eddsa_public_key.pem
                         </el-tag>   
                     </span>
                     <el-button v-waves size="mini" style="margin-left:10px;" @click="handleClipboard(response.public_key, $event)">
@@ -75,6 +77,10 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
+      setting: {
+        pass: '',        
+      },
       response: {
           private_key: '',
           public_key: '',
@@ -91,7 +97,6 @@ export default {
         }
 
         clipboard(text, event)
-        this.successTip('复制成功')
     },  
     handleDownload(code, event) {
       if (code == '') {
@@ -109,12 +114,18 @@ export default {
     submit() {
         this.response.private_key = ''
         this.response.public_key = ''
+
+        this.submitLoading = true
         
         eddsa(this.setting).then(response => {
             this.response.private_key = response.data.private_key
             this.response.public_key = response.data.public_key
 
+            this.submitLoading = false
+
             this.successTip('创建成功')
+        }).catch(err => {
+          this.submitLoading = false
         })
     }
   }

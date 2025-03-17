@@ -12,7 +12,7 @@
 
           <el-input v-model="setting.key" placeholder="加密秘钥" clearable style="width: 350px;margin-right: 10px;" class="filter-item" />
 
-          <el-button v-waves class="filter-item" type="primary" @click="submit">
+          <el-button v-waves class="filter-item" type="primary" :loading="submitLoading" @click="submit">
             提交加密
           </el-button>
       </div>
@@ -54,6 +54,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       setting: {
         type: 'sha256',
         payload: '',
@@ -74,10 +75,17 @@ export default {
   methods: {
     submit() {
         this.response.data = ''
+
+        this.submitLoading = true
         
         hmac(this.setting).then(response => {
             this.response.data = response.data.data
+
+            this.submitLoading = false
+
             this.successTip('提交成功')
+        }).catch(err => {
+          this.submitLoading = false
         })
     }
   }

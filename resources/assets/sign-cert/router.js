@@ -31,6 +31,17 @@ const route = {
     },
 
     {
+      path: '/sign-cert/dsa',
+      component: () => import('./views/dsa/index'),
+      name: 'SignCertDsa',
+      meta: {
+        title: 'SignCertDsa',
+        icon: 'el-icon-tickets',
+        roles: ['larke-admin.sign-cert.dsa']
+      }
+    },
+
+    {
       path: '/sign-cert/rsa',
       component: () => import('./views/rsa/index'),
       name: 'SignCertRsa',

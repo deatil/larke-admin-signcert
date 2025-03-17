@@ -25,7 +25,7 @@
 
           <el-input v-model="setting.pass" placeholder="秘钥密码，可不填" clearable style="width: 200px;margin-right: 10px;" class="filter-item" />
 
-          <el-button v-waves class="filter-item" type="primary" @click="submit">
+          <el-button v-waves class="filter-item" type="primary" :loading="submitLoading" @click="submit">
             生成证书
           </el-button>
       </div>
@@ -80,6 +80,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       setting: {
         type: 'p256',
         cipher: '3DES',
@@ -90,8 +91,11 @@ export default {
           public_key: '',
       },
       typeOptions: [
-        { key: 'p256', display_name: 'P-256' },
-        { key: 'p384', display_name: 'P-384' },
+        { key: 'p224', display_name: 'P224' },
+        { key: 'p256', display_name: 'P256' },
+        { key: 'p384', display_name: 'P384' },
+        { key: 'p521', display_name: 'P521' },
+        { key: 's256', display_name: 'S256' },
       ],  
       cipherOptions: [
         { key: 'RC2_40', display_name: 'RC2_40' },
@@ -115,18 +119,22 @@ export default {
         }
 
         clipboard(text, event)
-        
-        this.successTip('复制成功')
     },     
     submit() {
         this.response.private_key = ''
         this.response.public_key = ''
+
+        this.submitLoading = true
         
         ecdsa(this.setting).then(response => {
             this.response.private_key = response.data.private_key
             this.response.public_key = response.data.public_key
 
+            this.submitLoading = false
+
             this.successTip('创建成功')
+        }).catch(err => {
+          this.submitLoading = false
         })
     }
   }

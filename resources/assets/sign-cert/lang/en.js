@@ -3,6 +3,7 @@ export default {
     SignCert: 'SignCert',
 
     SignCertHmac: 'SignCert Hmac',
+    SignCertDsa: 'SignCert DSA',
     SignCertRsa: 'SignCert RSA',
     SignCertRsaPfx: 'SignCert RSAPfx',
     SignCertRsaPfxPem: 'SignCert RSAPfxPem',

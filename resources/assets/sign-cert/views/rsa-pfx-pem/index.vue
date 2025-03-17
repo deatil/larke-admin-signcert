@@ -13,7 +13,7 @@
           :show-file-list="false"
         >
           <el-button slot="trigger" class="filter-item" type="primary">选取pfx文件</el-button>
-          <el-button style="margin-left: 10px;" class="filter-item" type="success" @click="submit">确认生成</el-button>
+          <el-button style="margin-left: 10px;" class="filter-item" type="success" :loading="submitLoading" @click="submit">确认生成</el-button>
           <el-button v-if="removeVisible" class="filter-item" type="danger" @click="remove">移除文件</el-button>
         </el-upload>
       </div>
@@ -86,6 +86,7 @@ export default {
   filters: {},
   data() {
     return {
+      submitLoading: false,
       setting: {
         cer: '',
         pfx: '', 
@@ -131,11 +132,12 @@ export default {
         }
 
         clipboard(text, event)
-        this.successTip('复制成功')
     },        
     submit(param) {
       this.response.private_key = ''
       this.response.public_key = ''
+
+      this.submitLoading = true
 
       const formData = new FormData()
       formData.append('pfx', this.setting.pfx) 
@@ -146,9 +148,11 @@ export default {
         this.response.private_key = response.data.private_key
         this.response.public_key = response.data.public_key
 
+        this.submitLoading = false
+
         this.successTip('生成证书成功')
       }).catch(response => {
-        
+        this.submitLoading = false
       })
     }
   }

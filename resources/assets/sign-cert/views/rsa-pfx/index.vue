@@ -12,7 +12,7 @@
 
         <el-input v-model="setting.pass" placeholder="秘钥密码" clearable style="width: 200px;margin-right: 10px;" class="filter-item" />
 
-        <el-button v-waves class="filter-item" type="primary" @click="submit">
+        <el-button v-waves class="filter-item" type="primary" :loading="submitLoading" @click="submit">
           生成证书
         </el-button>
       </div>
@@ -97,6 +97,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       setting: {
         len: '2048',
         pass: '',        
@@ -126,7 +127,6 @@ export default {
         }
 
         clipboard(text, event)
-        this.successTip('复制成功')
     },   
     handleDownload(code) {
       if (code == '') {
@@ -146,6 +146,8 @@ export default {
       this.response.pfx_key = ''
       this.response.private_key = ''
       this.response.public_key = ''
+
+      this.submitLoading = true
       
       rsaPfx(this.setting).then(response => {
         this.response.csr_key = response.data.csr_key
@@ -153,7 +155,11 @@ export default {
         this.response.private_key = response.data.private_key
         this.response.public_key = response.data.public_key
 
+        this.submitLoading = false
+
         this.successTip('创建成功')
+      }).catch(err => {
+        this.submitLoading = false
       })
     }
   }

@@ -8,6 +8,14 @@ export function hmac(data) {
   })
 }
 
+export function dsa(data) {
+  return request({
+    url: '/sign-cert/dsa',
+    method: 'post',
+    data
+  })
+}
+
 export function rsa(data) {
   return request({
     url: '/sign-cert/rsa',

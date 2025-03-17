@@ -39,8 +39,11 @@ class Ecdsa extends BaseController
 
         // 方式
         $curveName = match($type) {
+            'p224'  => 'secp224r1', 
             'p256'  => 'prime256v1', 
             'p384'  => 'secp384r1',
+            'p521'  => 'secp521r1',
+            's256'  => 'secp256k1', 
             default => 'prime256v1',
         };
 
